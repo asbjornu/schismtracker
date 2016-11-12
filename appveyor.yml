@@ -40,34 +40,6 @@ install:
         }
       }
 
-      # 32-bit MSYS2 is not offered on AppVeyor yet, so we need to install it.
-      if ($arch -eq "i686") {
-        Write-Host "Installing 32-bit MSYS2..." -ForegroundColor Cyan
-
-        # download installer
-        $zipPath = "$($env:USERPROFILE)\msys2-i686-latest.tar.xz"
-        $tarPath = "$($env:USERPROFILE)\msys2-i686-latest.tar"
-
-        "Downloading MSYS2 installation package..."
-        (New-Object Net.WebClient).DownloadFile('http://repo.msys2.org/distrib/msys2-i686-latest.tar.xz', $zipPath)
-
-        Write-Host "Unzipping $zipPath..."
-        7z x $zipPath -y -o"$env:USERPROFILE" | Out-Null
-
-        Write-Host "Untaring $tarPath to C:\msys32\..."
-        7z x $tarPath -y -oC:\ | Out-Null
-        del $zipPath
-        del $tarPath
-
-        Write-Host "32-bit MSYS2 installed" -ForegroundColor Green
-
-        bash "pacman --sync --noconfirm --needed pacman pacman-mirrors"
-        bash "pacman --sync --noconfirm --needed VCS"
-        bash "pacman --sync --noconfirm --needed base-devel"
-        bash "pacman --sync --noconfirm --needed msys2-devel"
-        bash "pacman --sync --noconfirm --needed mingw-w64-$arch-toolchain"
-      }
-
       bash "pacman --sync --noconfirm --needed mingw-w64-$arch-SDL"
 
 build_script:
